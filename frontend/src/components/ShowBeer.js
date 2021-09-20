@@ -152,6 +152,7 @@ function ShowBeer(props) {
                                 autoComplete="off"
                                 type="text"
                                 disabled={true}
+                                key={food}
                             />
                         ))}
                     </Grid>
@@ -182,7 +183,7 @@ function ShowBeer(props) {
                         </Stack>
                     </Grid>
                     </Grid>
-                    <Grid item xs={5} style={{'align-content': 'center', 'display': 'flex'}}>
+                    <Grid item xs={5} style={{alignContent: 'center', display: 'flex'}}>
                         <img src={beerImage} alt="" height='300px' style={{margin: '2em auto 2em auto'}}></img>
                     </Grid>
                 </Grid>

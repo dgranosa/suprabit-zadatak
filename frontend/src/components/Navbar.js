@@ -57,8 +57,8 @@ function NavBar(props) {
 
   const menuItems = [
     {
-      link: "/",
       name: "Home",
+      link: "/",
       hidden: false,
       icon: <HomeIcon className="text-white" />
     },
@@ -135,7 +135,7 @@ function NavBar(props) {
                   );
                 }
                 return (
-                  <Link to='#' hidden={element.hidden}>
+                  <Link to='#' hidden={element.hidden} key={element.name}>
                   <Button
                     color="secondary"
                     size="large"

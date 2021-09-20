@@ -157,9 +157,8 @@ LoginDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   setStatus: PropTypes.func.isRequired,
-  openChangePasswordDialog: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  status: PropTypes.string,
+  status: PropTypes.object,
 };
 
 export default withRouter(withStyles(styles)(LoginDialog));

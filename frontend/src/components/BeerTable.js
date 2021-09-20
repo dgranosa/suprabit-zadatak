@@ -132,7 +132,7 @@ function BeerTable(props) {
           nextIconButtonProps={{
             "aria-label": "Next Page"
           }}
-          onChangePage={handleChangePage}
+          onPageChange={handleChangePage}
           classes={{
             select: classes.dNone,
             selectIcon: classes.dNone,

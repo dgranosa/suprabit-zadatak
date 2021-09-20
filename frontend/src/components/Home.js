@@ -101,7 +101,6 @@ function Home(props) {
         }
 
         if (filterBrew[0] !== null && filterBrew[1] !== null) {
-            console.log(filterBrew);
             cFilter = {
                 ...cFilter,
                 first_brewed: { between: filterBrew }
@@ -133,7 +132,7 @@ function Home(props) {
                 <Divider />
                 <AccordionDetails>
                 <Grid container>
-                    <IconButton onClick={clearFilters} style={{'margin-left': 'auto'}}><CloseIcon/></IconButton>
+                    <IconButton onClick={clearFilters} style={{marginLeft: 'auto'}}><CloseIcon/></IconButton>
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -167,7 +166,7 @@ function Home(props) {
                         renderInput={(params) => <TextField fullWidth margin="normal" variant="outlined" {...params} helperText={null} />}
                     />
                     </Grid>
-                    <Grid item xs={2}><Typography align='center' variant="h2" style={{'margin-top': '16px'}}>-</Typography></Grid>
+                    <Grid item xs={2}><Typography align='center' variant="h2" style={{marginTop: '16px'}}>-</Typography></Grid>
                     <Grid item xs={5}>
                     <DatePicker
                         views={['year', 'month']}

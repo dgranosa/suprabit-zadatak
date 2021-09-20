@@ -59,7 +59,6 @@ function ConsecutiveSnackbars(props) {
       open={isOpen}
       autoHideDuration={2000}
       onClose={handleClose}
-      onExited={processQueue}
       ContentProps={{
         classes: {
           root: classes.root,

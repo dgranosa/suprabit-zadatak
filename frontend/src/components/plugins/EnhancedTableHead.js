@@ -44,7 +44,7 @@ function EnhancedTableHead(props) {
           <TableCell
             key={index}
             align={row.numeric ? "right" : "inherit"}
-            padding="default"
+            padding="normal"
             sortDirection={orderBy === row.name ? order : false}
             className={index === 0 ? classes.paddingFix : null}
           >

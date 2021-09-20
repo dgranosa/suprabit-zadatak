@@ -1,7 +1,6 @@
 import './App.css';
 import NavBar from './components/Navbar'
 import React, { useState, useCallback } from "react";
-import PropTypes from "prop-types";
 import DialogSelector from './components/plugins/DialogSelector'
 import Main from './components/Main';
 import theme from './theme'
@@ -65,9 +64,5 @@ function App(props) {
     </LocalizationProvider>
   );
 }
-
-App.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default App;

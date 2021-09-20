@@ -43,7 +43,6 @@ function FormDialog(props) {
     <Dialog
       open={open}
       onClose={onClose}
-      disableBackdropClick={loading}
       disableEscapeKeyDown={loading}
       classes={{
         paper: classes.dialogPaper,

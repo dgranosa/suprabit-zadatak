@@ -202,7 +202,7 @@ function EditBeer(props) {
                             <Grid item>
                                 <Typography variant="h6">Food Pairing:</Typography>
                                 {beerFood.map((food, i) => (
-                                    <div>
+                                    <div key={food}>
                                     <TextField
                                         variant="outlined"
                                         margin="normal"
@@ -224,7 +224,7 @@ function EditBeer(props) {
                                 <Button fullWidth onClick={() => setBeerFood(beerFood.concat(['']))}>Add Food +</Button>
                                 </Box>
                             </Grid>
-                            <Grid item xs={10} style={{'margin-top': '1em'}}>
+                            <Grid item xs={10} style={{marginTop: '1em'}}>
                                 <Stack direction="row" spacing={2}>
                                     <Button
                                         endIcon={<SendIcon />}
@@ -248,7 +248,7 @@ function EditBeer(props) {
                                 </Stack>
                             </Grid>
                         </Grid>
-                        <Grid item xs={5} style={{'align-content': 'center', 'display': 'flex'}}>
+                        <Grid item xs={5} style={{alignContent: 'center', display: 'flex'}}>
                             <img src={beerImage} alt="" height='300px' style={{margin: '2em auto 2em auto'}}></img>
                         </Grid>
                     </Grid>
