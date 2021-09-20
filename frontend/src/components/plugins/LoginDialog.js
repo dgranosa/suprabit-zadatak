@@ -50,21 +50,7 @@ function LoginDialog(props) {
   const login = useCallback(async () => {
     setIsLoading(true);
     setStatus(null);
-    /*if (loginEmail.current.value !== "test@web.com") {
-      setTimeout(() => {
-        setStatus("invalidEmail");
-        setIsLoading(false);
-      }, 1500);
-    } else if (loginPassword.current.value !== "HaRzwc") {
-      setTimeout(() => {
-        setStatus("invalidPassword");
-        setIsLoading(false);
-      }, 1500);
-    } else {
-      setTimeout(() => {
-        history.push("/c/dashboard");
-      }, 150);
-    }*/
+    
     const [status, resp] = await Api.login(loginEmail.current.value, loginPassword.current.value);
     if (status) {
       dispatch({type: 'SET_LOGIN', payload: {user: loginEmail.current.value, token: resp.data.token}});

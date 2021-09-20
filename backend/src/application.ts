@@ -2,16 +2,19 @@ import {AuthenticationComponent, registerAuthenticationStrategy} from '@loopback
 import {AuthorizationComponent} from '@loopback/authorization';
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig, createBindingFromClass} from '@loopback/core';
-import {RepositoryMixin} from '@loopback/repository';
+import {RepositoryMixin, SchemaMigrationOptions} from '@loopback/repository';
 import {OpenApiSpec, RestApplication} from '@loopback/rest';
 import {
   RestExplorerBindings,
   RestExplorerComponent
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
+import fs from 'fs';
+import _ from 'lodash';
 import path from 'path';
 import {JWTAuthenticationStrategy} from './authentication-strategies/jwt-strategy';
 import {PasswordHasherBindings, TokenServiceBindings, TokenServiceConstants, UserServiceBindings} from './keys';
+import {BeerRepository, UserRepository} from './repositories';
 import {MySequence} from './sequence';
 import {BcryptHasher, JWTService, MyUserService} from './services';
 import {SECURITY_SCHEME_SPEC} from './utils/security-spec';
@@ -21,7 +24,9 @@ export {ApplicationConfig};
 export class BackendApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
-  constructor(options: ApplicationConfig = {}) {
+  constructor(
+    options: ApplicationConfig = {}
+  ) {
     super(options);
 
     // Set up the custom sequence
@@ -63,6 +68,48 @@ export class BackendApplication extends BootMixin(
       servers: [{url: '/api'}],
     };
     this.api(spec);
+  }
+
+  async migrateSchema(options?: SchemaMigrationOptions) {
+    await super.migrateSchema(options);
+
+    // Get repositories
+    const userRepo = await this.getRepository(UserRepository);
+    const beerRepo = await this.getRepository(BeerRepository);
+
+    // Add user
+    const user = {
+      email: 'user@example.com',
+      password: 'stringst',
+      role: 'admin'
+    };
+    const savedUser = await userRepo.create(_.omit(user, 'password'),);
+    await userRepo.userCredentials(savedUser.id).create({password: '$2a$10$GLRdWVlG8NtrcaOueioM3.jGfObD2Ef97VQfrsQMMC1.4wA1OtJs2'});
+
+    // Load beers
+    const data = await JSON.parse(fs.readFileSync('./data.json', 'utf8'));
+    for (let i = 0; i < data.length; i++) {
+      const d = data[i];
+      var dd = d.first_brewed.length == 4 ? new Date('01/01/' + d.first_brewed) : new Date(d.first_brewed.split('/')[0] + '/01/' + d.first_brewed.split('/')[1]);
+      dd.setHours(dd.getHours() + 4);
+      const beer = {
+        name: d.name,
+        tagline: d.tagline,
+        first_brewed: dd ? dd.toISOString() : new Date().toISOString(),
+        yeast: d.ingredients.yeast ?? "x",
+        image_url: d.image_url,
+        abv: d.abv,
+        ibu: d.ibu,
+        ebc: d.ebc,
+        description: d.description,
+        userId: savedUser.id
+      };
+      const savedBeer = await beerRepo.create(beer);
+
+      for (let j = 0; j < d.food_pairing.length; j++) {
+        await beerRepo.foods(savedBeer.id).create({name: d.food_pairing[j]});
+      }
+    }
   }
 
   private setUpBindings(): void {

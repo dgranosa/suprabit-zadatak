@@ -1,35 +1,35 @@
+import {authenticate} from '@loopback/authentication';
+import {inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody, response
 } from '@loopback/rest';
+import {SecurityBindings, UserProfile} from '@loopback/security';
 import {Food} from '../models';
 import {FoodRepository} from '../repositories';
+import {SECURITY_SPEC} from '../utils/security-spec';
 
 export class FoodController {
   constructor(
     @repository(FoodRepository)
-    public foodRepository : FoodRepository,
-  ) {}
+    public foodRepository: FoodRepository,
+  ) { }
 
-  @post('/foods')
-  @response(200, {
-    description: 'Food model instance',
-    content: {'application/json': {schema: getModelSchemaRef(Food)}},
+  @post('/foods', {
+    responses: {
+      '200': {
+        description: 'Food model instance',
+        content: {'application/json': {schema: getModelSchemaRef(Food)}},
+      }
+    }
   })
   async create(
     @requestBody({
@@ -111,11 +111,18 @@ export class FoodController {
     return this.foodRepository.findById(id, filter);
   }
 
-  @patch('/foods/{id}')
-  @response(204, {
-    description: 'Food PATCH success',
+  @patch('/foods/{id}', {
+    security: SECURITY_SPEC,
+    responses: {
+      '204': {
+        description: 'Food PATCH success',
+      }
+    }
   })
+  @authenticate('jwt')
   async updateById(
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
     @param.path.number('id') id: number,
     @requestBody({
       content: {
@@ -140,10 +147,15 @@ export class FoodController {
     await this.foodRepository.replaceById(id, food);
   }
 
-  @del('/foods/{id}')
-  @response(204, {
-    description: 'Food DELETE success',
+  @del('/foods/{id}', {
+    security: SECURITY_SPEC,
+    responses: {
+      '204': {
+        description: 'Food DELETE success',
+      }
+    }
   })
+  @authenticate('jwt')
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.foodRepository.deleteById(id);
   }

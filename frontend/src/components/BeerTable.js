@@ -11,11 +11,11 @@ import {
 } from "@material-ui/core";
 import { Stack } from '@mui/material';
 import EnhancedTableHead from "./plugins/EnhancedTableHead";
-import unixToDateString from "./functions/unixToDateString";
 import HighlightedInformation from "./plugins/HighlightedInformation";
 import ShowIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { format } from 'date-fns';
 
 const styles = theme => ({
   tableWrapper: {
@@ -50,14 +50,19 @@ const rows = [
     label: "Name"
   },
   {
-    id: "slogan",
+    id: "tagline",
     numeric: false,
-    label: "Slogan"
+    label: "Tagline"
   },
   {
-    id: "date",
+    id: "yeast",
     numeric: false,
-    label: "Date"
+    label: "Yeast"
+  },
+  {
+    id: "first_brewed",
+    numeric: false,
+    label: "First Brewed"
   },
   {
     id: "actions",
@@ -66,7 +71,7 @@ const rows = [
   }
 ];
 
-const rowsPerPage = 5;
+const rowsPerPage = 10;
 
 function BeerTable(props) {
   const { transactions, deleteBeer, history, classes } = props;
@@ -97,11 +102,15 @@ function BeerTable(props) {
                     {transaction.name}
                   </TableCell>
                   <TableCell component="th" scope="row">
+                    {transaction.tagline}
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    {unixToDateString(transaction.timestamp)}
+                    {transaction.yeast}
                   </TableCell>
                   <TableCell component="th" scope="row">
+                    {format(new Date(transaction.first_brewed), 'MMMM yyyy')}
+                  </TableCell>
+                  <TableCell component="th" scope="row" width='372px'>
                   <Stack direction="row" spacing={2}>
                     <Button variant="outlined" endIcon={<ShowIcon />} onClick={() => history.push('/show/' + transaction.id)}>Show</Button>
                     <Button variant="outlined" endIcon={<EditIcon />} onClick={() => history.push('/edit/' + transaction.id)}>Edit</Button>

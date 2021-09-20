@@ -8,6 +8,8 @@ import theme from './theme'
 import { MuiThemeProvider, CssBaseline } from "@material-ui/core";
 import GlobalStyles from "./GlobalStyles";
 import Store from './components/plugins/Store';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 function App(props) {
   const [selectedTab, setSelectedTab] = useState(null);
@@ -37,6 +39,7 @@ function App(props) {
   }, [setIsMobileDrawerOpen]);
 
   return (
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
     <MuiThemeProvider theme={theme}>
     <CssBaseline />
     <GlobalStyles />
@@ -59,6 +62,7 @@ function App(props) {
       <Main />
     </Store>
     </MuiThemeProvider>
+    </LocalizationProvider>
   );
 }
 

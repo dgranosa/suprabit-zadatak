@@ -1,25 +1,28 @@
+import {authenticate} from '@loopback/authentication';
+import {inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
   get,
   getModelSchemaRef,
-  getWhereSchemaFor,
-  param,
+  getWhereSchemaFor, HttpErrors, param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {
   Beer,
-  Food,
+  Food
 } from '../models';
 import {BeerRepository} from '../repositories';
+import {SECURITY_SPEC} from '../utils/security-spec';
 
 export class BeerFoodController {
   constructor(
@@ -27,6 +30,7 @@ export class BeerFoodController {
   ) { }
 
   @get('/beers/{id}/foods', {
+    security: SECURITY_SPEC,
     responses: {
       '200': {
         description: 'Array of Beer has many Food',
@@ -38,7 +42,10 @@ export class BeerFoodController {
       },
     },
   })
+  @authenticate('jwt')
   async find(
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<Food>,
   ): Promise<Food[]> {
@@ -46,6 +53,7 @@ export class BeerFoodController {
   }
 
   @post('/beers/{id}/foods', {
+    security: SECURITY_SPEC,
     responses: {
       '200': {
         description: 'Beer model instance',
@@ -53,7 +61,10 @@ export class BeerFoodController {
       },
     },
   })
+  @authenticate('jwt')
   async create(
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
     @param.path.number('id') id: typeof Beer.prototype.id,
     @requestBody({
       content: {
@@ -67,10 +78,16 @@ export class BeerFoodController {
       },
     }) food: Omit<Food, 'id'>,
   ): Promise<Food> {
+    const pBeer = await this.beerRepository.findById(id);
+
+    if (pBeer.userId != currentUserProfile[securityId])
+      throw new HttpErrors[403];
+
     return this.beerRepository.foods(id).create(food);
   }
 
   @patch('/beers/{id}/foods', {
+    security: SECURITY_SPEC,
     responses: {
       '200': {
         description: 'Beer.Food PATCH success count',
@@ -78,7 +95,10 @@ export class BeerFoodController {
       },
     },
   })
+  @authenticate('jwt')
   async patch(
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
     @param.path.number('id') id: number,
     @requestBody({
       content: {
@@ -90,10 +110,16 @@ export class BeerFoodController {
     food: Partial<Food>,
     @param.query.object('where', getWhereSchemaFor(Food)) where?: Where<Food>,
   ): Promise<Count> {
+    const pBeer = await this.beerRepository.findById(id);
+
+    if (pBeer.userId != currentUserProfile[securityId])
+      throw new HttpErrors[403];
+
     return this.beerRepository.foods(id).patch(food, where);
   }
 
   @del('/beers/{id}/foods', {
+    security: SECURITY_SPEC,
     responses: {
       '200': {
         description: 'Beer.Food DELETE success count',
@@ -101,10 +127,18 @@ export class BeerFoodController {
       },
     },
   })
+  @authenticate('jwt')
   async delete(
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
     @param.path.number('id') id: number,
     @param.query.object('where', getWhereSchemaFor(Food)) where?: Where<Food>,
   ): Promise<Count> {
+    const pBeer = await this.beerRepository.findById(id);
+
+    if (pBeer.userId != currentUserProfile[securityId])
+      throw new HttpErrors[403];
+
     return this.beerRepository.foods(id).delete(where);
   }
 }

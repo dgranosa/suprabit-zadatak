@@ -67,7 +67,7 @@ function EnhancedTableHead(props) {
                 className={classNames(classes.tableSortLabel, classes.noIcon)}
               >
                 <Typography variant="body2" className={classes.label}>
-                  {row.label}
+                  <b>{row.label}</b>
                 </Typography>
               </TableSortLabel>
             )}
